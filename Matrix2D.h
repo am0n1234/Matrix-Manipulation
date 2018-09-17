@@ -18,7 +18,8 @@ namespace MatrixClass{
 
 
 		int ** generate_matrix(int rows, int cols);	
-		void	print(),	//prints out matrix on screen
+		
+		void	print(), populate_matrix(int * src, int src_size);	//prints out matrix on screen
 
 
 	};
@@ -49,4 +50,25 @@ void MatrixClass::Matrix2D::print(){
 		cout << endl;
 	}
 	cout << endl;
+}
+void MatrixClass::Matrix2D::populate_matrix(int *src, int src_size){
+	if (this->rows*this->cols != src_size)
+	{
+		cout << "the matrix does not match with the source size!" << endl;
+		system("pause");
+		exit(-1);
+	}
+	//the source file that was recieved was perfectly fine
+
+	int pos = 0;
+	for (int i = 0; i < this->rows; i++)
+	{
+		for (int j = 0; j < this->cols; j++)
+		{
+			this->matrix_pointer[i][j] = src[pos++];
+
+		}
+
+	}
+
 }
