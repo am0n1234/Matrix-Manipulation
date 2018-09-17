@@ -21,6 +21,7 @@ namespace MatrixClass{
 		
 		void	print(), 
 		populate_matrix(int * src, int src_size),	//prints out matrix on screen
+		transpose(),
 		add(Matrix2D& x),	//a matrix is added
 		subtract(Matrix2D& x);	//a matrix 
 
@@ -52,6 +53,17 @@ void MatrixClass::Matrix2D::print(){
 		cout << endl;
 	}
 	cout << endl;
+}
+MatrixClass::Matrix2D::~Matrix2D()	{
+
+	for (int i = 0; i < this->rows; i++)
+	{
+		//we will delete each row
+		delete this->matrix_pointer[i];
+	}
+	// after each row is deleted we will delete the main pointer that points to the matrix
+	delete this->matrix_pointer;
+
 }
 void MatrixClass::Matrix2D::populate_matrix(int *src, int src_size){
 	if (this->rows*this->cols != src_size)
@@ -106,4 +118,30 @@ void MatrixClass::Matrix2D::subtract(Matrix2D &x) {
 		}
 	}
 
+}
+
+void MatrixClass::Matrix2D::transpose() {
+	//In place transposition of a matrix
+	int ** temp = generate_matrix(this->cols, this->rows); // n x m	matrix generated
+
+	for (int i = 0; i < this->rows; i++)		//temp is a transposed matrix created
+	{
+		for (int j = 0; j < this->cols; j++)
+		{
+			temp[j][i] = this->matrix_pointer[i][j];
+		}
+	}
+
+	for (int i = 0; i < this->rows; i++)		//the old matrix is deallocated from memory
+	{
+		//we will delete each row
+		delete this->matrix_pointer[i];
+	}
+	this->matrix_pointer = temp;	// the object now points to the tranposed matrix
+	//the temporary pointer is deallocated from memory
+	int x = this->rows;
+	this->rows = this->cols;
+	this->cols = x;
+	temp = NULL;
+	delete temp;
 }
