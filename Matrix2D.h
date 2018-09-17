@@ -15,21 +15,34 @@ namespace MatrixClass{
 			this->matrix_pointer = generate_matrix(rows, cols);
 		};	
 		~Matrix2D();		//destructor
+
+		int* get_row(int row_number);
+		int *get_column(int column_number);
 		int ** generate_matrix(int rows, int cols);	
-		void	print(), 
-			populate_matrix(int * src, int src_size),	
-			transpose(),
-			add(Matrix2D& x),	
-			subtract(Matrix2D& x),
-			set_value_at(int i, int j, int value),
-			mult(Matrix2D& x);
-		int 	get_value_at(int i, int j),
+		void	print(),	//prints out matrix on screen
+				transpose(),	//the matrix is transposed in place	
+				add(Matrix2D& x),	//a matrix is added
+				subtract(Matrix2D& x),	//a matrix 
+				mult(Matrix2D& x),
+				populate_matrix(int * src, int src_size),
+				set_value_at(int i, int j, int value);
+		int get_value_at(int i, int j),
 			get_rows(),
 			get_cols();
 
 	};
 }
+MatrixClass::Matrix2D::~Matrix2D()	{
 
+	for (int i = 0; i < this->rows; i++)
+	{
+		//we will delete each row
+		delete this->matrix_pointer[i];
+	}
+	// after each row is deleted we will delete the main pointer that points to the matrix
+	delete this->matrix_pointer;
+
+}
 int ** MatrixClass::Matrix2D::generate_matrix(int rows, int cols){
 	//generates a rows x columns matrix
 	int **temp = new int*[rows];
@@ -56,37 +69,30 @@ void MatrixClass::Matrix2D::print(){
 	}
 	cout << endl;
 }
-MatrixClass::Matrix2D::~Matrix2D()	{
+void MatrixClass::Matrix2D::transpose() {
+	//In place transposition of a matrix
+	int ** temp = generate_matrix(this->cols, this->rows); // n x m	matrix generated
 
-	for (int i = 0; i < this->rows; i++)
+	for (int i = 0; i < this->rows; i++)		//temp is a transposed matrix created
+	{
+		for (int j = 0; j < this->cols; j++)
+		{
+			temp[j][i] = this->matrix_pointer[i][j];
+		}
+	}
+
+	for (int i = 0; i < this->rows; i++)		//the old matrix is deallocated from memory
 	{
 		//we will delete each row
 		delete this->matrix_pointer[i];
 	}
-	// after each row is deleted we will delete the main pointer that points to the matrix
-	delete this->matrix_pointer;
-
-}
-void MatrixClass::Matrix2D::populate_matrix(int *src, int src_size){
-	if (this->rows*this->cols != src_size)
-	{
-		cout << "the matrix does not match with the source size!" << endl;
-		system("pause");
-		exit(-1);
-	}
-	//the source file that was recieved was perfectly fine
-
-	int pos = 0;
-	for (int i = 0; i < this->rows; i++)
-	{
-		for (int j = 0; j < this->cols; j++)
-		{
-			this->matrix_pointer[i][j] = src[pos++];
-
-		}
-
-	}
-
+	this->matrix_pointer = temp;	// the object now points to the tranposed matrix
+	//the temporary pointer is deallocated from memory
+	int x = this->rows;
+	this->rows = this->cols;
+	this->cols = x;
+	temp = NULL;
+	delete temp;
 }
 void MatrixClass::Matrix2D::add(Matrix2D &x){
 
@@ -121,31 +127,26 @@ void MatrixClass::Matrix2D::subtract(Matrix2D &x) {
 	}
 
 }
+void MatrixClass::Matrix2D::populate_matrix(int *src, int src_size){
+	if (this->rows*this->cols != src_size)
+	{
+		cout << "the matrix does not match with the source size!" << endl;
+		system("pause");
+		exit(-1);
+	}
+	//the source file that was recieved was perfectly fine
 
-void MatrixClass::Matrix2D::transpose() {
-	//In place transposition of a matrix
-	int ** temp = generate_matrix(this->cols, this->rows); // n x m	matrix generated
-
-	for (int i = 0; i < this->rows; i++)		//temp is a transposed matrix created
+	int pos = 0;
+	for (int i = 0; i < this->rows; i++)
 	{
 		for (int j = 0; j < this->cols; j++)
 		{
-			temp[j][i] = this->matrix_pointer[i][j];
+			this->matrix_pointer[i][j] = src[pos++];
+
 		}
+
 	}
 
-	for (int i = 0; i < this->rows; i++)		//the old matrix is deallocated from memory
-	{
-		//we will delete each row
-		delete this->matrix_pointer[i];
-	}
-	this->matrix_pointer = temp;	// the object now points to the tranposed matrix
-	//the temporary pointer is deallocated from memory
-	int x = this->rows;
-	this->rows = this->cols;
-	this->cols = x;
-	temp = NULL;
-	delete temp;
 }
 void MatrixClass::Matrix2D::set_value_at(int i, int j, int value){
 	this->matrix_pointer[i][j] = value;
