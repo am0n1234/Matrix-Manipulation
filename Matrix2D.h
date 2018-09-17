@@ -15,15 +15,17 @@ namespace MatrixClass{
 			this->matrix_pointer = generate_matrix(rows, cols);
 		};	
 		~Matrix2D();		//destructor
-
-
 		int ** generate_matrix(int rows, int cols);	
-		
 		void	print(), 
-		populate_matrix(int * src, int src_size),	//prints out matrix on screen
-		transpose(),
-		add(Matrix2D& x),	//a matrix is added
-		subtract(Matrix2D& x);	//a matrix 
+			populate_matrix(int * src, int src_size),	
+			transpose(),
+			add(Matrix2D& x),	
+			subtract(Matrix2D& x),
+			set_value_at(int i, int j, int value),
+			mult(Matrix2D& x);
+		int 	get_value_at(int i, int j),
+			get_rows(),
+			get_cols();
 
 	};
 }
@@ -142,6 +144,80 @@ void MatrixClass::Matrix2D::transpose() {
 	int x = this->rows;
 	this->rows = this->cols;
 	this->cols = x;
+	temp = NULL;
+	delete temp;
+}
+void MatrixClass::Matrix2D::set_value_at(int i, int j, int value){
+	this->matrix_pointer[i][j] = value;
+}
+int MatrixClass::Matrix2D::get_value_at(int i, int j){
+	return this->matrix_pointer[i][j];
+}
+int* MatrixClass::Matrix2D::get_row(int row_number){
+	int * temp = new int[this->cols - 1];
+	temp = this->matrix_pointer[row_number];
+	return temp;
+}
+int* MatrixClass::Matrix2D::get_column(int column_number){
+	int * temp = new int[this->rows - 1];
+	for (int i = 0; i < this->rows; i++)
+	{
+		temp[i] = this->matrix_pointer[i][column_number];
+	}
+	return temp;
+}
+int MatrixClass::Matrix2D::get_cols(){
+	return this->cols;
+}
+int MatrixClass::Matrix2D::get_rows(){
+	return this->rows;
+}
+int dot_product(int *a, int*b, int size){
+	int temp = 0;
+
+	for (int i = 0; i < size; i++)
+	{
+		temp += (a[i] * b[i]);
+	}
+
+	return temp;
+}
+void MatrixClass::Matrix2D::mult(Matrix2D& x){
+	int src_size = this->get_cols();
+	if (this->get_cols() != x.get_rows())
+	{
+		cout << "The matrix multiplication of these two matrices is invalid" << endl <<endl;
+		system("pause");
+		exit(-1);
+	}
+	//firstly we must establish that the resultant matrix will be row_a x cols_b 
+	int resultant_rows = this->get_rows();
+	int resultant_cols = x.get_cols();
+	int ** temp = generate_matrix(resultant_rows, resultant_cols);
+	int * a = new int[];
+	int * b = new int[];
+
+
+	for (int i = 0; i < resultant_rows; i++)
+	{
+		for (int j = 0; j < resultant_cols; j++)
+		{
+			a = this->get_row(i);
+			b = x.get_column(j);
+			temp[i][j] = dot_product(a, b, src_size);
+		}
+	}
+	//delete the previous matrix row by row, 
+
+	for (int i = 0; i < this->get_rows(); i++)
+	{
+		delete this->matrix_pointer[i];
+	}
+	this->matrix_pointer = temp;
+
+	this->rows = resultant_rows;
+	this->cols = resultant_cols;
+
 	temp = NULL;
 	delete temp;
 }
