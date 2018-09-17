@@ -19,8 +19,10 @@ namespace MatrixClass{
 
 		int ** generate_matrix(int rows, int cols);	
 		
-		void	print(), populate_matrix(int * src, int src_size);	//prints out matrix on screen
-
+		void	print(), 
+		populate_matrix(int * src, int src_size),	//prints out matrix on screen
+		add(Matrix2D& x),	//a matrix is added
+		subtract(Matrix2D& x);	//a matrix 
 
 	};
 }
@@ -69,6 +71,39 @@ void MatrixClass::Matrix2D::populate_matrix(int *src, int src_size){
 
 		}
 
+	}
+
+}
+void MatrixClass::Matrix2D::add(Matrix2D &x){
+
+	if (this->rows != x.get_rows() || this->cols != x.get_cols())
+	{
+		cout << "Addition invalid!" << endl;
+		system("pause");
+		exit(-1);
+	}
+	for (int i = 0; i < this->rows; i++)
+	{
+		for (int j = 0; j < this->cols; j++)
+		{
+			this->matrix_pointer[i][j] = this->matrix_pointer[i][j] + x.get_value_at(i, j);
+		}
+	}
+}
+void MatrixClass::Matrix2D::subtract(Matrix2D &x) {
+
+	if (this->rows != x.get_rows() || this->cols != x.get_cols())
+	{
+		cout << "Subtraction of these two matrices is invalid!" << endl;
+		system("pause");
+		exit(-1);
+	}
+	for (int i = 0; i < this->rows; i++)
+	{
+		for (int j = 0; j < this->cols; j++)
+		{
+			this->matrix_pointer[i][j] -= x.get_value_at(i, j);
+		}
 	}
 
 }
